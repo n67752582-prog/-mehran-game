@@ -11,6 +11,10 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v4
 
+      - name: Extract Project Zip
+        run: |
+          unzip -o MehranAndroid-1.0.0-final-project.zip
+
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
@@ -19,16 +23,12 @@ jobs:
 
       - name: Grant Execute Permission for Gradlew
         run: |
-          if [ -f "./gradlew" ]; then
-            chmod +x ./gradlew
-          elif [ -f "./MehranAndroid/gradlew" ]; then
-            chmod +x ./MehranAndroid/gradlew
-          fi
+          cd MehranAndroid
+          chmod +x gradlew
 
       - name: Generate Keystore & Build Release Bundle
         run: |
-          if [ -d "./MehranAndroid" ]; then cd ./MehranAndroid; fi
-          
+          cd MehranAndroid
           keytool -genkey -v -keystore release.jks -alias mehran_key -keyalg RSA -keysize 2048 -validity 10000 -storepass mehran123 -keypass mehran123 -dname "CN=Mehran, OU=Game, O=Dev, L=Baghdad, S=Baghdad, C=IQ"
 
           ./gradlew bundleRelease \
